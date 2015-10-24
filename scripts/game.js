@@ -5,7 +5,7 @@
 Q.Sprite.extend("Player", {
     init: function (p) {
         this._super(p, {
-            asset: "../images/spacership.png",
+            asset: "../images/new.png",
             x: Q.el.width / 2,
             y: Q.el.height - 60,
             type: Q.SPRITE_FRIENDLY,
@@ -13,7 +13,7 @@ Q.Sprite.extend("Player", {
         })
     }
 })
-Q.load(["../images/gradient.jpg", "../images/spacership.png", "../data/player.json"], function () {
+Q.load(["../images/gradient.jpg", "../images/new.png", "../data/player.json"], function () {
 
 
     Q.compileSheets("../images/new.png, ../data/player.json")
