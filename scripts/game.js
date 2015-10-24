@@ -5,7 +5,7 @@
 Q.Sprite.extend("Player", {
     init: function (p) {
         this._super(p, {
-            asset: "../images/new.png",
+            asset: "../images/spacership.png",
             x: Q.el.width / 2,
             y: Q.el.height - 60,
             type: Q.SPRITE_FRIENDLY,
@@ -13,8 +13,10 @@ Q.Sprite.extend("Player", {
         })
     }
 })
-Q.load(["../images/gradient.jpg", "../images/new.png"], function () {
-    Q.compileSheets("../images/new.png")
+Q.load(["../images/gradient.jpg", "../images/spacership.png", "../data/player.json"], function () {
+
+
+    Q.compileSheets("../images/new.png, ../data/player.json")
     var background = new Q.Sprite({ asset: "../images/gradient.jpg", x: Q.el.width / 2, y: Q.el.height / 2, type: Q.SPRITE_NONE })
     var player = new Q.Player();
     Q.gameLoop(function (dt) {
