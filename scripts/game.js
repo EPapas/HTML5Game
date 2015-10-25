@@ -1,6 +1,11 @@
-﻿var Q = Quintus()
-.include("Sprites, Anim")
-.setup({ width: 800, height: 480 });
+﻿ 
+
+
+var Q = Quintus()
+.include("Sprites, Anim,Input, Touch ")
+.setup({ width: 1200, height: 800 })
+.controls();
+
 
 Q.Sprite.extend("Player", {
     init: function (p) {
@@ -14,6 +19,13 @@ Q.Sprite.extend("Player", {
         });
         this.add("animation");
         this.play("default");
+
+    },
+    step: function(dt) {
+        if (Q.inputs['left'])
+            this.p.x -= this.p.speed;
+        if (Q.inputs['right'])
+            this.p.x += this.p.speed;
 
     }
 })
@@ -30,5 +42,6 @@ Q.load(["../images/gradient.jpg", "../images/new.png", "../data/player.json"], f
         background.render(Q.ctx);
         player.update(dt);
         player.render(Q.ctx);
+       
     })
 });
