@@ -77,7 +77,7 @@ Q.component("Gun", {
         fire: function(){
             if (Q.inputs['fire']) {
                 var entity = this;
-                var shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 100, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
+                var shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 70, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
                 entity.p.shots.push(shot);
             }
         }
