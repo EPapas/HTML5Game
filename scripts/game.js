@@ -46,7 +46,7 @@ Q.Sprite.extend("Player", {
       
 
         this.p.x = clamp(this.p.x, 0 + (this.p.w / 2), Q.el.width - (this.p.w / 2));
-        this.fire();
+        
 
         }  
 });
@@ -64,16 +64,37 @@ Q.Sprite.extend("Shot", {
     },
     step: function (dt) {
         this.p.y -= this.p.speed * dt;
+
+        if (this.p.y > Q.el.height || this.p.y < 0) {
+            this.destroy();
+        }
     }
 });
 
 Q.component("Gun", {
     added: function () {
         this.entity.p.shots = [];
+        this.entity.on("step", "handleFiring")
 
     },
 
     extend: {
+
+        handleFiring: function (dt) {
+            var entity = this;
+
+            for (var i = entity.p.shots.length - 1; i >= 0; i--) {
+                if (entity.p.shots[i].isDestroyed) {
+                    entity.p.shots.splice(i, 1);
+                    
+                }
+            }
+
+            if (Q.inputs['fire']) {
+                entity.fire();
+            }
+        },
+
         fire: function(){
             if (Q.inputs['fire']) {
                 var entity = this;
