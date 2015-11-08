@@ -87,6 +87,9 @@ Q.Sprite.extend("Shot", {
     }
 });
 
+
+ 
+
 Q.component("BasicAI", {
     added: function () {
         this.entity.changeDirections();
@@ -154,12 +157,12 @@ Q.component("Gun", {
             var entity = this;
             if (!entity.p.canFire)
                 return;
-
+            
             var shot;
             if (type == Q.SPRITE_FRIENDLY) {
                  shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 70, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
             } else {
-                shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y + entity.p.h - 70, speed: -200, type: Q.SPRITE_DEFAULT | Q.SPRITE_ENEMY}));
+                shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y + entity.p.h - 40, speed: -200, type: Q.SPRITE_DEFAULT | Q.SPRITE_ENEMY}));
             }
                 entity.p.shots.push(shot);
                 entity.p.canFire = false;
