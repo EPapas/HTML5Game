@@ -6,6 +6,7 @@
 var Q = Quintus()
 .include("Sprites, Anim, Input, Touch, Scenes")
 .setup({ width: 1200, height: 750 })
+    .controls()
 .touch();
 
 Q.input.touchControls({
@@ -74,6 +75,7 @@ Q.Sprite.extend("Shot", {
 Q.component("Gun", {
     added: function () {
         this.entity.p.shots = [];
+        this.entity.p.canFire = true;
         this.entity.on("step", "handleFiring")
 
     },
@@ -96,12 +98,19 @@ Q.component("Gun", {
         },
 
         fire: function(){
-            if (Q.inputs['fire']) {
-                var entity = this;
+           
+            var entity = this;
+            if (!entity.p.canFire)
+                return;
+
                 var shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 70, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
                 entity.p.shots.push(shot);
+                entity.p.canFire = false;
+                setTimeout(function () {
+                    entity.p.canFire = true; 
+                }, 500);
             }
-        }
+        
 
     }
 });
