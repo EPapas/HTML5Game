@@ -62,6 +62,7 @@ Q.Sprite.extend("Alien", {
         this.p.y = this.p.h;
         this.add("animation");
         this.play("default");
+        this.add("BasicAI");
     }
 
 });
@@ -86,6 +87,43 @@ Q.Sprite.extend("Shot", {
     }
 });
 
+Q.component("BasicAI", {
+    added: function () {
+        this.entity.changeDirections();
+        this.entity.on("step", "move");
+        this.entity.on("step", "tryToFire");
+        this.entity. add("Gun");
+
+    },
+    extend: {
+        changeDirections: function () {
+            var entity = this;
+            var numberOfSeconds = Math.floor((Math.random() * 5) + 1);
+            setTimeout(function () {
+                entity.p.speed = -entity.p.speed;
+                entity.changeDirections();
+            }, numberOfSeconds * 1000);
+        },
+        move: function (dt) {
+            var entity = this;
+            entity.p.x -= entity.p.speed * dt;
+            if (entity.p.x > Q.el.width - (entity.p.w / 2) || entity.p.x < 0 + (entity.p.w / 2)) {
+                entity.p.speed = -entity.p.speed;
+            }
+        },
+
+        tryToFire: function () {
+            var entity = this;
+            var player = Q("Player").first();
+            if (!player)
+                return;
+            if (player.p.x + player.p.w > this.p.x && player.p.x - player.p.w < this.p.x) {
+                this.fire(Q.SPRITE_ENEMY);
+            }
+        }
+    }
+});
+
 Q.component("Gun", {
     added: function () {
         this.entity.p.shots = [];
@@ -106,18 +144,23 @@ Q.component("Gun", {
                 }
             }
 
-            if (Q.inputs['fire']) {
-                entity.fire();
+            if (Q.inputs['fire'] && entity.p.type == Q.SPRITE_FRIENDLY) {
+                entity.fire(Q.SPRITE_FRIENDLY);
             }
         },
 
-        fire: function(){
+        fire: function(type){
            
             var entity = this;
             if (!entity.p.canFire)
                 return;
 
-                var shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 70, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
+            var shot;
+            if (type == Q.SPRITE_FRIENDLY) {
+                 shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y - 70, speed: 200, type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY }));
+            } else {
+                shot = Q.stage().insert(new Q.Shot({ x: entity.p.x, y: entity.p.y + entity.p.h - 70, speed: -200, type: Q.SPRITE_DEFAULT | Q.SPRITE_ENEMY}));
+            }
                 entity.p.shots.push(shot);
                 entity.p.canFire = false;
                 setTimeout(function () {
