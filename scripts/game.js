@@ -5,8 +5,9 @@
 
 var Q = Quintus()
 .include("Sprites, Anim, Input, Touch, Scenes")
-.setup({ width: 1400, height: 750 }) 
+.setup({ width: 1400, height: 750 })
 .touch();
+
 
 Q.input.touchControls({
     controls: [
@@ -63,6 +64,15 @@ Q.Sprite.extend("Alien", {
         this.add("animation");
         this.play("default");
         this.add("BasicAI");
+        this.on("hit", function (col) {
+            if (col.obj.isA("Shot") && ((col.obj.p.type & Q.SPRITE_FRIENDLY) == Q.SPRITE_FRIENDLY)) {
+                this.destroy();
+                col.obj.destroy();
+            }
+        });
+    },
+    step: function (dt) {
+        this.stage.collide(this);
     }
 
 });
@@ -180,9 +190,7 @@ Q.scene("mainLevel", function(stage) {
     stage.insert(new Q.Sprite({ asset: "../images/space.jpg", x: Q.el.width / 2, y: Q.el.height / 2, type: Q.SPRITE_NONE }));
     stage.insert(new Q.Player());
     stage.insert(new Q.Alien());
-     
-
-});
+     });
 Q.load(["../images/space.jpg", "../images/new.png", "../images/enemy.png",
     "../images/shot.png", "../data/player.json", "../data/shot.json", "../data/alien.json"], function () {
 
