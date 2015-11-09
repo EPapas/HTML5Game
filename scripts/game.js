@@ -3,14 +3,14 @@
 }
 
 
-var Q = Quintus()
-.include("Sprites, Anim, Input, Touch, Scenes")
+var Q = Quintus().include("Sprites, Anim, Input, Touch, Scenes, UI")
 .setup({ width: 1400, height: 750 })
 .touch();
 
 
 Q.input.touchControls({
-    controls: [
+    controls:
+        [
         ['left', '<'],
         ['right', '>'],
         [],
@@ -38,6 +38,13 @@ Q.Sprite.extend("Player", {
         this.add("animation");
         this.play("default");
         this.add("Gun");
+        this.on("hit", function (col) {
+            if (col.obj.isA("Shot") && ((col.obj.p.type & Q.SPRITE_ENEMY) == Q.SPRITE_ENEMY)) {
+                this.destroy();
+                col.obj.destroy();
+                Q.stageScene("endGame", 1, { label: "You Died!" });
+            }
+        });
     },
     step: function(dt) {
         if (Q.inputs['left'])
@@ -47,6 +54,7 @@ Q.Sprite.extend("Player", {
       
 
         this.p.x = clamp(this.p.x, 0 + (this.p.w / 2), Q.el.width - (this.p.w / 2));
+        this.stage.collide(this);
         
 
         }  
@@ -68,6 +76,7 @@ Q.Sprite.extend("Alien", {
             if (col.obj.isA("Shot") && ((col.obj.p.type & Q.SPRITE_FRIENDLY) == Q.SPRITE_FRIENDLY)) {
                 this.destroy();
                 col.obj.destroy();
+                Q.stageScene("endGame", 1, { label: "You Won!" });
             }
         });
     },
@@ -190,7 +199,27 @@ Q.scene("mainLevel", function(stage) {
     stage.insert(new Q.Sprite({ asset: "../images/space.jpg", x: Q.el.width / 2, y: Q.el.height / 2, type: Q.SPRITE_NONE }));
     stage.insert(new Q.Player());
     stage.insert(new Q.Alien());
-     });
+});
+
+Q.scene("endGame", function (stage) {
+    var container = stage.insert(new Q.UI.Container({
+        x: Q.width / 2, y: Q.height / 2, fill: "#FFFFFF"
+    }));
+
+    var button = container.insert(new Q.UI.Button({
+        x:0, y:0, fill: "#CCCCCC", label: "Play Again"
+    }));
+
+    container.insert(new Q.UI.Text({
+        x:0, y:  - button.p.h, label: stage.options.label
+    }));
+    button.on("click", function () {
+        Q.clearStages();
+        Q.stageScene("mainLevel");
+    });
+    container.fit(20);
+
+});
 Q.load(["../images/space.jpg", "../images/new.png", "../images/enemy.png",
     "../images/shot.png", "../data/player.json", "../data/shot.json", "../data/alien.json"], function () {
 
