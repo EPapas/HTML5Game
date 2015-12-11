@@ -4,7 +4,7 @@
 
 
 var Q = Quintus().include("Sprites, Anim, Input, Touch, Scenes, UI")
-.setup({ width: 1400, height: 750 })
+.setup({ width: 1300, height: 730 })
 .touch();
 
 
@@ -33,13 +33,14 @@ Q.Sprite.extend("Player", {
             x: Q.el.width / 2,
             y: Q.el.height - 60,
             type: Q.SPRITE_FRIENDLY,
-            speed: 10
-        });
+            speed: 10       });
         this.add("animation");
         this.play("default");
         this.add("Gun");
         this.on("hit", function (col) {
             if (col.obj.isA("Shot") && ((col.obj.p.type & Q.SPRITE_ENEMY) == Q.SPRITE_ENEMY)) {
+               
+                        
                 this.destroy();
                 col.obj.destroy();
                 Q.stageScene("endGame", 1, { label: "You Died!" });
@@ -74,6 +75,7 @@ Q.Sprite.extend("Alien", {
         this.add("BasicAI");
         this.on("hit", function (col) {
             if (col.obj.isA("Shot") && ((col.obj.p.type & Q.SPRITE_FRIENDLY) == Q.SPRITE_FRIENDLY)) {
+                
                 this.destroy();
                 col.obj.destroy();
                 Q.stageScene("endGame", 1, { label: "You Won!" });
@@ -86,19 +88,21 @@ Q.Sprite.extend("Alien", {
 
 });
 
+
+ 
 Q.Sprite.extend("Shot", {
     init: function (p) {
         this._super(p, {
             sprite: "shot",
             sheet: "shot",
             speed: 200
-        });
+        })
         this.add("animation");
         this.play("default");
         
     },
     step: function (dt) {
-        this.p.y -= this.p.speed * dt;
+        this.p.y -= this.p.speed  * dt;
 
         if (this.p.y > Q.el.height || this.p.y < 0) {
             this.destroy();
@@ -130,7 +134,7 @@ Q.component("BasicAI", {
             var entity = this;
             entity.p.x -= entity.p.speed * dt;
             if (entity.p.x > Q.el.width - (entity.p.w / 2) || entity.p.x < 0 + (entity.p.w / 2)) {
-                entity.p.speed = -entity.p.speed;
+                entity.p.speed  = -entity.p.speed;
             }
         },
 
@@ -187,7 +191,7 @@ Q.component("Gun", {
                 entity.p.canFire = false;
                 setTimeout(function () {
                     entity.p.canFire = true; 
-                }, 500);
+                }, 300);
             }
         
 
@@ -207,7 +211,7 @@ Q.scene("endGame", function (stage) {
     }));
 
     var button = container.insert(new Q.UI.Button({
-        x:0, y:0, fill: "#CCCCCC", label: "Play Again"
+        x: 0, y: 0, fill: "#72DBDF", label: "Play Again"
     }));
 
     container.insert(new Q.UI.Text({
